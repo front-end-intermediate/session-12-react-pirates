@@ -19,16 +19,16 @@ class App extends Component {
   }
 
 
-componentWillMount(){
-  this.ref = base.syncState(`daniel-deverell-pirates/pirates`, {
-    context: this,
-    state: 'pirates'
-  })
-}
+  componentWillMount(){
+    this.ref = base.syncState(`daniel-deverell-pirates/pirates`, {
+      context: this,
+      state: 'pirates'
+    })
+  }
 
-componentWillUmount(){
-  base.removeBinding(this.ref)
-}
+  componentWillUmount(){
+    base.removeBinding(this.ref)
+  }
 
   loadSamples(){
     this.setState({
@@ -36,17 +36,11 @@ componentWillUmount(){
     })
   }
 
-  // removePirate(key){
-  //   const pirates = {...this.state.pirates}
-  //   delete pirates[key]
-  //   this.setState({pirates})
-  // }
-
   removePirate(key){
-  const pirates = {...this.state.pirates}
-  pirates[key] = null
-  this.setState({pirates})
-}
+    const pirates = {...this.state.pirates}
+    pirates[key] = null
+    this.setState({pirates})
+  }
 
   addPirate(pirate){
     //update state
