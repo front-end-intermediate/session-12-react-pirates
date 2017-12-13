@@ -1,0 +1,18 @@
+.logo {
+    height: 200px;
+}
+
+.header {
+    height: 220px;
+    padding: 20px;
+    color: #333;
+    background: #bada55 url(../img/hero.png) 100% 50% no-repeat;
+    background-size: 50%;
+}
+
+h1 {
+    font-family: 'Pirata One', cursive;
+    font-size: 5rem;
+    color: #C90813;
+    line-height: 1.1;
+}
