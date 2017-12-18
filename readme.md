@@ -24,23 +24,66 @@ npm run start
 
 ## Stateless Components
 
-Not every component needs to be involved with data.
+Not every component needs to be involved with data. When you only need to render some material use a Stateless Functional Component.
 
+* Header
+
+```
+import React, { Component } from 'react';
+import '../assets/css/Header.css'
+import logo from '../assets/img/anchor.svg';
+
+class Header extends React.Component {
+  render(){
+    return (
+      <div className="header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <h1>Header Component</h1>
+      </div>)
+    }
+  }
+
+export default Header;
+```
+
+To:
+
+```
+import React, { Component } from 'react';
+import '../assets/css/Header.css'
+import logo from '../assets/img/anchor.svg';
+
+const Header = (props) => {
+  return (
+    <div className="header">
+    <img src={logo} className="App-logo" alt="logo" />
+    <h1>{props.headerTitle}</h1>
+    </div>)
+}
+
+export default Header;
+```
+
+* App
+
+```
+<Header headerTitle = "Pirates List" />
+```
+
+Note - no 'this' required in the props.
 
 
 ### Persisting the Data
 
-I will demo this first using my db on Firebase.
+Demo using db on Firebase. Firebase is like one big object.
 
+1. Create an account at https://firebase.com/
+1. Create a new project called `<firstname>-<lastname>-pirates`
+1. Go to the empty database (left hand menu)
 
+Click on Rules at the top.
 
-Create an account at https://firebase.google.com/
-
-Create a new project called `<firstname>-<lastname>-pirates`
-
-Go to the empty database (left hand menu)
-
-Go to rules:
+* Default
 
 ```
 {
@@ -51,7 +94,7 @@ Go to rules:
 }
 ```
 
-Change to:
+Change defaults to:
 
 ```
 {
@@ -62,9 +105,9 @@ Change to:
 }
 ```
 
-and Publish.
+and click Publish.
 
-App.js state.
+Examine App.js state. Any change to pirates needs to be made to firebase.
 
 in src create `base.js`
 
@@ -78,12 +121,9 @@ const base = Rebase.createClass({
 
 [Rebase](https://www.npmjs.com/package/rebase) is a simple utility that we are going to need to massage strings.
 
-<!-- `$ npm install rebase --save` -->
 `$ npm install re-base@2.2.0 --save`
 
-Or add to your package.json (dependancies):
-
-"re-base": "2.2.0"
+Or add `"re-base": "2.2.0"` to your package.json dependencies.
 
 Add domain, database URL, API key.
 
@@ -99,7 +139,6 @@ databaseURL: "https://daniel-deverell-pirates.firebaseio.com",
 
 * base.js:
 
-
 ```
 import Rebase from 're-base'
 
@@ -109,14 +148,20 @@ const base = Rebase.createClass({
   databaseURL: "https://daniel-deverell-pirates.firebaseio.com",
 })
 
-export default base
+export default base;
 ```
 
-Import into App.js
+* App.js
 
 `import base from './base'`
 
-Component Lifecycle: component will mount
+## React Component Lifecycle
+
+[Documentation](https://reactjs.org/docs/react-component.html).
+
+* component will mount - hooks into component before it is displayed.
+
+* App
 
 ```
 componentWillMount(){
@@ -127,13 +172,15 @@ componentWillMount(){
 }
 ```
 
+Note the path and the object.
+
 ```
 componentWillUmount(){
   base.removeBinding(this.ref)
 }
 ```
 
-Load pirates and examine the Firebase HTML5 websockets
+Load pirates and examine the Firebase HTML5 websockets.
 
 To delete a pirate we need to accomodate Firebase:
 
@@ -145,249 +192,348 @@ removePirate(key){
 }
 ```
 
-Pirate.js
+
+## Bi-Directional Data
+
+React's version of $scope
+
+Make the pirates available
+
+* App
 
 ```
-const myColor = '#C90813'
-
-const myStyle={
-  color: myColor
-}
+<PirateForm 
+pirates={this.state.pirates} 
+addPirate={this.addPirate} 
+loadSamples={this.loadSamples} 
+removePirate={this.removePirate} />
+</div>
 ```
 
-### Routing
+* PirateForm
 
-[See](https://reacttraining.com/react-router/web/guides/quick-start)
-
-`> npm install react-router-dom --save`
-
-* index.js
+Call renderPirates with a .map:
 
 ```
-import {
-  BrowserRouter as Router,
-  Route
-} from 'react-router-dom'
-
-class Main extends React.Component {
-  render() {
-    return (
-    <Router>
+render(){
+  return (
     <div>
-      <Route exact path="/" component={App}/>
+    {Object.keys(this.props.pirates).map(this.renderPirates)}
+```
+
+Add the function
+
+```
+  renderPirates(key){
+    return (
+    <p>{key}</p>
+    )
+  }
+```
+
+```
+  renderPirates(key){
+    const pirate = this.props.pirates[key]
+    return (
+    <div key={key}>
+      <p>{key}</p>
+      <input value={pirate.name} type="text" name="name" placeholder="Pirate name" />
+      <input value={pirate.weapon} type="text" name="weapon" placeholder="Pirate weapon" />
+      <input value={pirate.vessel} type="text" name="vessel" placeholder="Pirate vessel" />
+      
     </div>
-  </Router>
-      )
+    )
+  }
+```
+
+```
+  constructor() {
+    super();
+    this.renderPirates = this.renderPirates.bind(this);
+  }
+```
+
+Note error. React only allows you to put state into a field if you have the intention of editing it.
+
+Listen for a change on one input.
+
+```
+<input value={pirate.name} onChange={(e) => this.handleChange(e, key)} type="text" name="name" placeholder="Pirate name" />
+```
+
+Create the method:
+
+```
+  handleChange(e, key){
+    const pirate = this.props.pirates[key]
+  }
+```
+
+Remember to bind it in the constructor:
+
+```
+  constructor() {
+    super();
+    this.renderPirates = this.renderPirates.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+```
+
+Test by sending the pirate to the console:
+
+```
+  handleChange(e, key){
+    const pirate = this.props.pirates[key]
+    console.log(pirate)
+    console.log(e.target)
+    console.log(e.target.value)
+  }
+```
+
+Values need to be put into state
+
+```
+  handleChange(e, key){
+    const pirate = this.props.pirates[key]
+    const updatedPirate = {
+      ...pirate, 
+      [e.target.name]: e.target.value
+    }
+    console.log(updatedPirate)
+  }
+```
+
+Pass the updated pirate to the App component for updating.
+
+* App
+
+```
+  updatePirate(key, updatedPirate){
+    const pirates = {...this.state.pirates};
+    pirates[key] = updatedPirate;
+    this.setState({ pirates })
+  }
+```
+
+Pass the method to the component.
+
+```
+<PirateForm 
+      updatePirate={this.updatePirate}
+      pirates={this.state.pirates} 
+      addPirate={this.addPirate} 
+      loadSamples={this.loadSamples} 
+      removePirate={this.removePirate} />
+```
+
+Bind it.
+
+```
+constructor() {
+  super();
+  this.addPirate = this.addPirate.bind(this);
+  this.loadSamples = this.loadSamples.bind(this)
+  this.removePirate = this.removePirate.bind(this)
+  this.updatePirate = this.updatePirate.bind(this)
+  this.state = {
+    pirates: {}
   }
 }
-
-ReactDOM.render(
-  <Main />,
-  document.getElementById('root')
-  );
 ```
 
-### Pirate Detail
-
-Use Header.js as a template
-
-* PirateDetail.js
+* PirateForm
 
 ```
-import React, { Component } from 'react'
+  handleChange(e, key){
+    const pirate = this.props.pirates[key]
+    const updatedPirate = {
+      ...pirate, 
+      [e.target.name]: e.target.value
+    }
+    this.props.updatePirate(key, updatedPirate);
+  }
+```
 
-class PirateDetail extends Component {
-  render() {
+Add the onChange handler to the other fields.
+
+```
+renderPirates(key){
+  const pirate = this.props.pirates[key]
+  return (
+  <div key={key}>
+    <p>{key}</p>
+    <input value={pirate.name} onChange={(e) => this.handleChange(e, key)} type="text" name="name" placeholder="Pirate name" />
+    <input value={pirate.weapon} onChange={(e) => this.handleChange(e, key)} type="text" name="weapon" placeholder="Pirate weapon" />
+    <input value={pirate.vessel} onChange={(e) => this.handleChange(e, key)} type="text" name="vessel" placeholder="Pirate vessel" />
+  </div>
+  )
+}
+```
+
+Test and check out Firebase.
+
+
+## Authentication
+
+* Firebase
+
+Enable Github authentication under Authentication > Sign In Method
+
+* Github
+
+Navigate to Settings > Developer settings > OAuth Apps and register a new OAuth application.
+
+Copy the URL from Firebase and enter the Client ID and Client Secret into Firebase.
+
+* PirateForm
+
+```
+  renderLogin(){
     return (
-      <div className="pirate-detail">
-        <h1>Pirate detail</h1>
+      <div>
+      <p>Sign in</p>
+      <button onClick={() => this.authenticate('github')} >Log in with Github</button>
+      </div>
+      )
+  }
+```
+
+and bind it
+
+```
+  constructor() {
+    super();
+    this.renderPirates = this.renderPirates.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.renderLogin = this.renderLogin.bind(this);
+  }
+```
+
+Set an initial value for uid in state:
+
+```
+  constructor() {
+    super();
+    this.renderPirates = this.renderPirates.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.renderLogin = this.renderLogin.bind(this);
+    this.state = {
+      uid: null
+    }
+  }
+```
+
+Add an if statement that shows a button to log in:
+
+```
+  render(){
+    const logout = <button>Log Out</button>;
+    if(!this.state.uid) {
+      return <div>{this.renderLogin()}</div>
+    }
+
+    return (
+      <div>
+      {logout}
+      {Object.keys(this.props.pirates).map(this.renderPirates)}
+      <h3>Pirate Form Component</h3>
+      <AddPirateForm addPirate={this.props.addPirate} />
+      <button onClick={this.props.loadSamples}>Load Sample Pirates</button>`
       </div>
       )
   }
 }
-
-export default PirateDetail;
 ```
 
-* index
-
-`<Route path="/pirate/:pid" component={PirateDetail} />`:
+Create the authenticate method and bind it
 
 ```
-import PirateDetail from './PirateDetail';
-
-class Main extends React.Component {
-  render() {
-    return (
-    <Router>
-    <div>
-      <Route exact path="/" component={App}/>
-      <Route path="/pirate/:pid" component={PirateDetail} />
-    </div>
-  </Router>
-      )
+  constructor() {
+    super();
+    this.renderPirates = this.renderPirates.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.renderLogin = this.renderLogin.bind(this);
+    this.authenticate = this.authenticate.bind(this);
+    this.state = {
+      uid: null
+    }
   }
+
+  authenticate(provider){
+    console.log(`Trying to log in with ${provider}`)
+  }
+```
+
+Import base:
+
+```
+import base from '../base';
+```
+
+```
+  authenticate(provider){
+    console.log(`Trying to log in with ${provider}`);
+    base.authWithOAuthPopup(provider, this.authHandler);
+  }
+
+  authHandler(err, authData) {
+    console.log(authData)
+  }
+```
+
+Bind the authHandler:
+
+`this.authHandler = this.authHandler.bind(this);`
+
+If no error add uid to state.
+
+```
+  authHandler(err, authData) {
+    console.log(authData)
+    if (err){
+      console.log(err);
+      return;
+    }
+    this.setState({
+      uid: authData.user.uid
+    })
+  }
+```
+
+Refresh is a problem. Use a lifecycle hook.
+
+```
+componentDidMount(){
+  base.onAuth((user) => {
+    if(user) {
+      this.authHandler(null, {user});
+    }
+  })
 }
 ```
 
-We probably want the routing to occur in App.js to keep the header and replace <Pirate /> and PirateForm />
+Log Out
 
+```
+logout(){
+  base.unauth();
+  this.setState({uid: null})
+}
+```
+
+Bind it
+
+`this.logout = this.logout.bind(this);`
+
+Add a call tot hee method in the button
+
+```
+render(){
+  const logout = <button onClick={() => this.logout()}>Log Out</button>;
+```
 
 
 ### Notes
-
-
-
-
-### Validation Homework
-
-Note the dependencies in package.json.
-
-`npm install`
-
-`npm run boom!`
-
-Note the classes Angular adds to the input fields as they are manipulated by the user in `static/partials/pirate-list.template.html`
-
-Give the form a name:
-
-`<form ng-submit="addPirate(pirate)" name="addform">`
-
-Disable the submit button:
-
-`<button ng-disabled="addform.$invalid" type="submit">Add Pirate</button>`
-
-Note: you can visually identify the button as being disabled using:
-
-```css
-button[disabled] {
-  background: #bbb;
-  cursor: not-allowed;
-  border: none;
-}
-```
-
-https://www.w3schools.com/csSref/playit.asp?filename=playcss_cursor&preval=not-allowed
-
-Give the input a name. Add a paragraph with ng-show conditions.
-
-```html
-<div class="form-group">
-  <label>
-    <input ng-model="$ctrl.pirate.name" required ng-minlength="6" placeholder="Name" name="pname" />
-    <svg viewBox="0 0 20 20" class="icon">
-      <path d="M0 0 L10 10 L0 20"></path>
-    </svg>
-  </label>
-  <p class="error" ng-show="addform.pname.$invalid && addform.pname.$touched"> A name must have at least 6 characters.</p>
-</div>
-```
-
-Note the svg. 
-
-```css
-.error {
-  color: red;
-} 
-
-label {
-  display: flex;
-  height: 2rem;
-}
-
-input {
-  width: 100%;
-  height: 1.6rem;
-  font-size: 1rem;
-  border: none;
-  border-bottom: 1px solid hsl(0%, 0%, 85%);
-  order: 1;
-}
-```
-
-https://www.sitepoint.com/closer-look-svg-path-data/
-
-Ref: this video from [frontend.center](https://www.youtube.com/watch?v=af4ZQJ14yu8).
-
-```
-input:focus {
-  outline: none;
-  border-color: hsl(0%, 0%, 25%)
-}
-
-.icon {
-  width: 1rem;
-  opacity: 0;
-  transition: all 0.5s;
-  transform: translateX(-100%)
-  // stroke-dasharray: 0, 20;
-  // stroke-dashoffset: -14.642;
-}
-
-.icon path {
-  stroke: black;
-  fill: none;
-  stroke-width: 1px;
-}
-
-input:focus + .icon {
-  opacity: 1;
-  transform: translateX(0)
-  // stroke-dasharray: 28.284, 20;
-  // stroke-dashoffset: 0;
-}
-
-.ng-valid.ng-not-empty {
-  border-color: hsl(166, 72%, 40%)
-}
-
-.ng-invalid.ng-dirty {
-  border-color: hsl(0, 100%, 40%)
-}
-
-```
-
-Using the dash effect:
-
-```
-.icon {
-  width: 1rem;
-  // opacity: 0;
-  transition: all 0.5s;
-  // transform: translateX(-100%)
-  stroke-dasharray: 0, 20;
-  stroke-dashoffset: -14.642;
-}
-
-.icon path {
-  stroke: black;
-  fill: none;
-  stroke-width: 1px;
-}
-
-input:focus + .icon {
-  // opacity: 1;
-  // transform: translateX(0)
-  stroke-dasharray: 28.284, 20;
-  stroke-dashoffset: 0;
-}
-```
-
-
-See https://www.w3schools.com/angular/angular_validation.asp for a complete set of examples for Angular validation.
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
