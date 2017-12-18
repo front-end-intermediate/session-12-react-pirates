@@ -282,10 +282,17 @@ Test by sending the pirate to the console:
     console.log(pirate)
     console.log(e.target)
     console.log(e.target.value)
+    console.log(e.target.name, e.target.value)
   }
 ```
 
-Values need to be put into state
+Values need to be put into state.
+
+We need a copy of the object. THis is the old method:
+
+`const updatedPIrate = Object.assign([], pirate)` 
+
+but we will use spread operator and overlay the new properties on top of it. `e.target.name` gives us the property name so we will use what's know as a computed property - `[e.target.name]`. 
 
 ```
   handleChange(e, key){
