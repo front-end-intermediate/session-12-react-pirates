@@ -524,7 +524,7 @@ Bind it
 
 `this.logout = this.logout.bind(this);`
 
-Add a call tot hee method in the button
+Add a call to the method in the button
 
 ```
 render(){
