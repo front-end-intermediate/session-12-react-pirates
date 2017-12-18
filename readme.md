@@ -22,6 +22,12 @@ $ cd react-pirates
 npm run start
 ```
 
+## Stateless Components
+
+Not every component needs to be involved with data.
+
+
+
 ### Persisting the Data
 
 I will demo this first using my db on Firebase.
