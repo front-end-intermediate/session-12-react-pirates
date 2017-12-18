@@ -4,13 +4,7 @@
 
 For you final project you can convert your midterm to Angular 4 using the files we have worked on.
 
-Be sure to add a navigation and routing as outline in session 10 notes.
-
 You may also create a version of the recipes list and details in React.
-
-* Spend some quality time with the exercises on [Built with React](http://buildwithreact.com) (do the Tutorial).
-
-## Reading
 
 ## React Project
 
@@ -180,8 +174,6 @@ componentWillUmount(){
 }
 ```
 
-Load pirates and examine the Firebase HTML5 websockets.
-
 To delete a pirate we need to accomodate Firebase:
 
 ```
@@ -192,14 +184,15 @@ removePirate(key){
 }
 ```
 
-
 ## Bi-Directional Data
 
-React's version of $scope
+* React's version of $scope
 
 Make the pirates available
 
 * App
+
+`pirates={this.state.pirates}`:
 
 ```
 <PirateForm 
@@ -230,6 +223,8 @@ Add the function
     )
   }
 ```
+
+
 
 ```
   renderPirates(key){
@@ -272,11 +267,11 @@ Create the method:
 Remember to bind it in the constructor:
 
 ```
-  constructor() {
-    super();
-    this.renderPirates = this.renderPirates.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
+constructor() {
+  super();
+  this.renderPirates = this.renderPirates.bind(this);
+  this.handleChange = this.handleChange.bind(this);
+}
 ```
 
 Test by sending the pirate to the console:
@@ -317,6 +312,8 @@ Pass the updated pirate to the App component for updating.
 
 Pass the method to the component.
 
+`updatePirate={this.updatePirate}`:
+
 ```
 <PirateForm 
       updatePirate={this.updatePirate}
@@ -327,6 +324,8 @@ Pass the method to the component.
 ```
 
 Bind it.
+
+* App
 
 ```
 constructor() {
