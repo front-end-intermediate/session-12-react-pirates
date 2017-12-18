@@ -373,83 +373,164 @@ renderPirates(key){
 Test and check out Firebase.
 
 
-### Routing
+## Authentication
 
-[See](https://reacttraining.com/react-router/web/guides/quick-start)
+* Firebase
 
-`> npm install react-router-dom --save`
+Enable Github authentication under Authentication > Sign In Method
 
-* index.js
+* Github
+
+Navigate to Settings > Developer settings > OAuth Apps and register a new OAuth application.
+
+Copy the URL from Firebase and enter the Client ID and Client Secret into Firebase.
+
+* PirateForm
 
 ```
-import {
-  BrowserRouter as Router,
-  Route
-} from 'react-router-dom'
-
-class Main extends React.Component {
-  render() {
+  renderLogin(){
     return (
-    <Router>
-    <div>
-      <Route exact path="/" component={App}/>
-    </div>
-  </Router>
+      <div>
+      <p>Sign in</p>
+      <button onClick={() => this.authenticate('github')} >Log in with Github</button>
+      </div>
       )
   }
-}
-
-ReactDOM.render(
-  <Main />,
-  document.getElementById('root')
-  );
 ```
 
-### Pirate Detail
-
-* PirateDetail.js
+and bind it
 
 ```
-import React, { Component } from 'react'
+  constructor() {
+    super();
+    this.renderPirates = this.renderPirates.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.renderLogin = this.renderLogin.bind(this);
+  }
+```
 
-class PirateDetail extends Component {
-  render() {
+Set an initial value for uid in state:
+
+```
+  constructor() {
+    super();
+    this.renderPirates = this.renderPirates.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.renderLogin = this.renderLogin.bind(this);
+    this.state = {
+      uid: null
+    }
+  }
+```
+
+Add an if statement that shows a button to log in:
+
+```
+  render(){
+    const logout = <button>Log Out</button>;
+    if(!this.state.uid) {
+      return <div>{this.renderLogin()}</div>
+    }
+
     return (
-      <div className="pirate-detail">
-        <h2>Pirate detail</h2>
+      <div>
+      {logout}
+      {Object.keys(this.props.pirates).map(this.renderPirates)}
+      <h3>Pirate Form Component</h3>
+      <AddPirateForm addPirate={this.props.addPirate} />
+      <button onClick={this.props.loadSamples}>Load Sample Pirates</button>`
       </div>
       )
   }
 }
-
-export default PirateDetail;
 ```
 
-* index
-
-`<Route path="/pirate/:pid" component={PirateDetail} />`:
+Create the authenticate method and bind it
 
 ```
-import PirateDetail from './PirateDetail';
-
-class Main extends React.Component {
-  render() {
-    return (
-    <Router>
-    <div>
-      <Route exact path="/" component={App}/>
-      <Route path="/pirate/:pid" component={PirateDetail} />
-    </div>
-  </Router>
-      )
+  constructor() {
+    super();
+    this.renderPirates = this.renderPirates.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.renderLogin = this.renderLogin.bind(this);
+    this.authenticate = this.authenticate.bind(this);
+    this.state = {
+      uid: null
+    }
   }
+
+  authenticate(provider){
+    console.log(`Trying to log in with ${provider}`)
+  }
+```
+
+Import base:
+
+```
+import base from '../base';
+```
+
+```
+  authenticate(provider){
+    console.log(`Trying to log in with ${provider}`);
+    base.authWithOAuthPopup(provider, this.authHandler);
+  }
+
+  authHandler(err, authData) {
+    console.log(authData)
+  }
+```
+
+Bind the authHandler:
+
+`this.authHandler = this.authHandler.bind(this);`
+
+If no error add uid to state.
+
+```
+  authHandler(err, authData) {
+    console.log(authData)
+    if (err){
+      console.log(err);
+      return;
+    }
+    this.setState({
+      uid: authData.user.uid
+    })
+  }
+```
+
+Refresh is a problem. Use a lifecycle hook.
+
+```
+componentDidMount(){
+  base.onAuth((user) => {
+    if(user) {
+      this.authHandler(null, {user});
+    }
+  })
 }
 ```
 
-Test with `http://localhost:3000/pirate/pirate01`
+Log Out
 
+```
+logout(){
+  base.unauth();
+  this.setState({uid: null})
+}
+```
 
+Bind it
 
+`this.logout = this.logout.bind(this);`
+
+Add a call tot hee method in the button
+
+```
+render(){
+  const logout = <button onClick={() => this.logout()}>Log Out</button>;
+```
 
 
 ### Notes
