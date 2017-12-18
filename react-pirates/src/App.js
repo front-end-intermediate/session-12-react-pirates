@@ -13,11 +13,11 @@ class App extends Component {
     this.addPirate = this.addPirate.bind(this);
     this.loadSamples = this.loadSamples.bind(this)
     this.removePirate = this.removePirate.bind(this)
+    this.updatePirate = this.updatePirate.bind(this)
     this.state = {
       pirates: {}
     }
   }
-
 
   componentWillMount(){
     this.ref = base.syncState(`daniel-deverell-pirates/pirates`, {
@@ -52,17 +52,28 @@ class App extends Component {
     this.setState({ pirates: pirates })
   }
 
+  updatePirate(key, updatedPirate){
+    const pirates = {...this.state.pirates};
+    pirates[key] = updatedPirate;
+    this.setState({ pirates })
+  }
+
   render() {
     return (
       <div className="App">
-      <Header />
+      <Header headerTitle = "Pirates List" />
       <ul>
       {
         Object.keys(this.state.pirates)
         .map( key => <Pirate key={key} index={key} details={this.state.pirates[key]} removePirate = {this.removePirate} /> )
       }
       </ul>
-      <PirateForm addPirate={this.addPirate} loadSamples={this.loadSamples} removePirate={this.removePirate} />
+      <PirateForm 
+      updatePirate={this.updatePirate}
+      pirates={this.state.pirates} 
+      addPirate={this.addPirate} 
+      loadSamples={this.loadSamples} 
+      removePirate={this.removePirate} />
       </div>
       );
   }
