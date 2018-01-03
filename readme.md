@@ -61,7 +61,7 @@ export default Header;
 * App
 
 ```
-<Header headerTitle = "Pirates List" />
+<Header headerTitle="Pirates List" />
 ```
 
 Note - no 'this' required in the props.
@@ -540,6 +540,13 @@ render(){
 
 
 ### Notes
+
+Create a repo.
+
+Sub git a build
+
+Set "homepage": "https://xxx.github.io/<repo-name>" in package.json
+
 
 
 
