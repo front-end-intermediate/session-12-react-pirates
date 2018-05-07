@@ -115,7 +115,7 @@ const base = Rebase.createClass({
 
 Or add `"re-base": "2.2.0"` to your package.json dependencies.
 
-Add domain, database URL, API key.
+### Add domain, database URL, API key
 
 In Firebase click on Project Overview > Add Firebase to your web app.
 
@@ -184,7 +184,9 @@ removePirate(key){
 
 * React's version of $scope
 
-Make the pirates available
+We will now use `PirateFrom` to allow the user to edit the pirates from a single location.
+
+Make the state available to the `PirateForm`
 
 * `App`:
 
@@ -220,6 +222,10 @@ Add the function
   }
 ```
 
+Note that we are calling this method from the retrun value of the component's render function.
+
+Update the method to display additional data:
+
 ```js
   renderPirates(key){
     const pirate = this.props.pirates[key]
@@ -235,6 +241,8 @@ Add the function
   }
 ```
 
+Note the error. We need a constructor.
+
 ```js
   constructor() {
     super();
@@ -242,7 +250,7 @@ Add the function
   }
 ```
 
-Note error. React only allows you to put state into a field if you have the intention of editing it.
+Again, note the error. React only allows you to put state into a field if you have the intention of editing it.
 
 Listen for a change on one input.
 
@@ -282,11 +290,11 @@ Test by sending the pirate to the console:
 
 Values need to be put into state.
 
-We need a copy of the object. This is the old method:
+<!-- We need a copy of the object. This is the old method:
 
-`const updatedPIrate = Object.assign([], pirate)`
+`const updatedPIrate = Object.assign([], pirate)` -->
 
-but we will use spread operator and overlay the new properties on top of it. `e.target.name` gives us the property name so we will use what's know as a computed property - `[e.target.name]`.
+We will use spread operator and overlay the new properties on top of it. `e.target.name` gives us the property name so we will use what's know as a computed property:
 
 ```js
   handleChange(e, key){
@@ -298,6 +306,8 @@ but we will use spread operator and overlay the new properties on top of it. `e.
     console.log(updatedPirate)
   }
 ```
+
+## Moving the Function to App.js
 
 Pass the updated pirate to the App component for updating.
 
@@ -371,7 +381,7 @@ renderPirates(key){
 }
 ```
 
-Test and check out Firebase.
+Test and check out Firebase. We now have two way communication with the database. Look ma! No Submit button.
 
 ## Authentication
 
