@@ -2,17 +2,13 @@
 
 ## Homework
 
-For you final project you can convert your midterm to Angular 4 using the files we have worked on.
-
-You may also create a version of the recipes list and details in React.
+Continue to work on your final project - convert your midterm to Angular 4 using the files we have worked or create a version of the recipes list and details in React.
 
 ## React Project
 
 ```bash
-$ cd react-pirates
-```
-
-```bash
+cd react-pirates
+npm i
 npm run start
 ```
 
@@ -20,52 +16,49 @@ npm run start
 
 Not every component needs to be involved with data. When you only need to render some material use a Stateless Functional Component.
 
-* Header
+* `Header`:
 
-```
+```js
 import React, { Component } from 'react';
-import '../assets/css/Header.css'
-import logo from '../assets/img/anchor.svg';
+import '../assets/css/Header.css';
 
 class Header extends React.Component {
-  render(){
+  render() {
     return (
       <div className="header">
-        <img src={logo} className="App-logo" alt="logo" />
         <h1>Header Component</h1>
-      </div>)
-    }
+      </div>
+    );
   }
+}
 
 export default Header;
 ```
 
 To:
 
-```
-import React, { Component } from 'react';
-import '../assets/css/Header.css'
-import logo from '../assets/img/anchor.svg';
+```js
+import React from 'react';
+import '../assets/css/Header.css';
 
-const Header = (props) => {
+const Header = props => {
   return (
     <div className="header">
-    <img src={logo} className="App-logo" alt="logo" />
-    <h1>{props.headerTitle}</h1>
-    </div>)
-}
+      <h1>{props.headerTitle}</h1>
+    </div>
+  );
+};
 
 export default Header;
 ```
 
-* App
+* `App`:
 
 ```
 <Header headerTitle="Pirates List" />
 ```
 
 Note - no 'this' required in the props.
-
 
 ### Persisting the Data
 
@@ -79,7 +72,7 @@ Click on Rules at the top.
 
 * Default
 
-```
+```js
 {
   "rules": {
     ".read": "auth != null",
@@ -90,7 +83,7 @@ Click on Rules at the top.
 
 Change defaults to:
 
-```
+```js
 {
   "rules": {
     ".read": true,
@@ -109,7 +102,7 @@ in src create `base.js`
 import Rebase from 're-base'
 
 const base = Rebase.createClass({
-  
+
 })
 ```
 
@@ -125,7 +118,7 @@ In Firebase click on Project Overview > Add Firebase to your web app.
 
 Extract the following information:
 
-```
+```js
 apiKey: "AIzaSyAHnKw63CUBAqSuCREgils_waYJ0qwpGiU",
 authDomain: "daniel-deverell-pirates.firebaseapp.com",
 databaseURL: "https://daniel-deverell-pirates.firebaseio.com",
@@ -133,19 +126,19 @@ databaseURL: "https://daniel-deverell-pirates.firebaseio.com",
 
 * base.js:
 
-```
-import Rebase from 're-base'
+```js
+import Rebase from 're-base';
 
 const base = Rebase.createClass({
-  apiKey: "AIzaSyAHnKw63CUBAqSuCREgils_waYJ0qwpGiU",
-  authDomain: "daniel-deverell-pirates.firebaseapp.com",
-  databaseURL: "https://daniel-deverell-pirates.firebaseio.com",
-})
+  apiKey: 'AIzaSyAHnKw63CUBAqSuCREgils_waYJ0qwpGiU',
+  authDomain: 'daniel-deverell-pirates.firebaseapp.com',
+  databaseURL: 'https://daniel-deverell-pirates.firebaseio.com'
+});
 
 export default base;
 ```
 
-* App.js
+* `App.js`:
 
 `import base from './base'`
 
@@ -155,9 +148,9 @@ export default base;
 
 * component will mount - hooks into component before it is displayed.
 
-* App
+* `App`:
 
-```
+```js
 componentWillMount(){
   this.ref = base.syncState(`daniel-deverell-pirates/pirates`, {
     context: this,
@@ -168,7 +161,7 @@ componentWillMount(){
 
 Note the path and the object.
 
-```
+```js
 componentWillUmount(){
   base.removeBinding(this.ref)
 }
@@ -176,7 +169,7 @@ componentWillUmount(){
 
 To delete a pirate we need to accomodate Firebase:
 
-```
+```js
 removePirate(key){
   const pirates = {...this.state.pirates}
   pirates[key] = null
@@ -190,22 +183,22 @@ removePirate(key){
 
 Make the pirates available
 
-* App
+* `App`:
 
 `pirates={this.state.pirates}`:
 
-```
-<PirateForm 
-pirates={this.state.pirates} 
-addPirate={this.addPirate} 
-loadSamples={this.loadSamples} 
+```js
+<PirateForm
+pirates={this.state.pirates}
+addPirate={this.addPirate}
+loadSamples={this.loadSamples}
 removePirate={this.removePirate} />
 </div>
 ```
 
-* PirateForm
+* `PirateForm`:
 
-Call renderPirates with a .map:
+Call `renderPirates` with a `.map`:
 
 ```
 render(){
@@ -224,9 +217,7 @@ Add the function
   }
 ```
 
-
-
-```
+```js
   renderPirates(key){
     const pirate = this.props.pirates[key]
     return (
@@ -235,7 +226,7 @@ Add the function
       <input value={pirate.name} type="text" name="name" placeholder="Pirate name" />
       <input value={pirate.weapon} type="text" name="weapon" placeholder="Pirate weapon" />
       <input value={pirate.vessel} type="text" name="vessel" placeholder="Pirate vessel" />
-      
+
     </div>
     )
   }
@@ -252,13 +243,13 @@ Note error. React only allows you to put state into a field if you have the inte
 
 Listen for a change on one input.
 
-```
+```html
 <input value={pirate.name} onChange={(e) => this.handleChange(e, key)} type="text" name="name" placeholder="Pirate name" />
 ```
 
 Create the method:
 
-```
+```js
   handleChange(e, key){
     const pirate = this.props.pirates[key]
   }
@@ -266,7 +257,7 @@ Create the method:
 
 Remember to bind it in the constructor:
 
-```
+```js
 constructor() {
   super();
   this.renderPirates = this.renderPirates.bind(this);
@@ -276,7 +267,7 @@ constructor() {
 
 Test by sending the pirate to the console:
 
-```
+```js
   handleChange(e, key){
     const pirate = this.props.pirates[key]
     console.log(pirate)
@@ -288,17 +279,17 @@ Test by sending the pirate to the console:
 
 Values need to be put into state.
 
-We need a copy of the object. THis is the old method:
+We need a copy of the object. This is the old method:
 
-`const updatedPIrate = Object.assign([], pirate)` 
+`const updatedPIrate = Object.assign([], pirate)`
 
-but we will use spread operator and overlay the new properties on top of it. `e.target.name` gives us the property name so we will use what's know as a computed property - `[e.target.name]`. 
+but we will use spread operator and overlay the new properties on top of it. `e.target.name` gives us the property name so we will use what's know as a computed property - `[e.target.name]`.
 
 ```
   handleChange(e, key){
     const pirate = this.props.pirates[key]
     const updatedPirate = {
-      ...pirate, 
+      ...pirate,
       [e.target.name]: e.target.value
     }
     console.log(updatedPirate)
@@ -307,7 +298,7 @@ but we will use spread operator and overlay the new properties on top of it. `e.
 
 Pass the updated pirate to the App component for updating.
 
-* App
+* `App`:
 
 ```
   updatePirate(key, updatedPirate){
@@ -321,20 +312,21 @@ Pass the method to the component.
 
 `updatePirate={this.updatePirate}`:
 
-```
-<PirateForm 
-      updatePirate={this.updatePirate}
-      pirates={this.state.pirates} 
-      addPirate={this.addPirate} 
-      loadSamples={this.loadSamples} 
-      removePirate={this.removePirate} />
+```js
+<PirateForm
+  updatePirate={this.updatePirate}
+  pirates={this.state.pirates}
+  addPirate={this.addPirate}
+  loadSamples={this.loadSamples}
+  removePirate={this.removePirate}
+/>
 ```
 
 Bind it.
 
 * App
 
-```
+```js
 constructor() {
   super();
   this.addPirate = this.addPirate.bind(this);
@@ -347,13 +339,13 @@ constructor() {
 }
 ```
 
-* PirateForm
+* `PirateForm`:
 
-```
+```js
   handleChange(e, key){
     const pirate = this.props.pirates[key]
     const updatedPirate = {
-      ...pirate, 
+      ...pirate,
       [e.target.name]: e.target.value
     }
     this.props.updatePirate(key, updatedPirate);
@@ -362,7 +354,7 @@ constructor() {
 
 Add the onChange handler to the other fields.
 
-```
+```js
 renderPirates(key){
   const pirate = this.props.pirates[key]
   return (
@@ -378,7 +370,6 @@ renderPirates(key){
 
 Test and check out Firebase.
 
-
 ## Authentication
 
 * Firebase
@@ -391,7 +382,7 @@ Navigate to Settings > Developer settings > OAuth Apps and register a new OAuth 
 
 Copy the URL from Firebase and enter the Client ID and Client Secret into Firebase.
 
-* PirateForm
+* `PirateForm`:
 
 ```
   renderLogin(){
@@ -406,7 +397,7 @@ Copy the URL from Firebase and enter the Client ID and Client Secret into Fireba
 
 and bind it
 
-```
+```js
   constructor() {
     super();
     this.renderPirates = this.renderPirates.bind(this);
@@ -417,7 +408,7 @@ and bind it
 
 Set an initial value for uid in state:
 
-```
+```js
   constructor() {
     super();
     this.renderPirates = this.renderPirates.bind(this);
@@ -431,7 +422,7 @@ Set an initial value for uid in state:
 
 Add an if statement that shows a button to log in:
 
-```
+```js
   render(){
     const logout = <button>Log Out</button>;
     if(!this.state.uid) {
@@ -453,7 +444,7 @@ Add an if statement that shows a button to log in:
 
 Create the authenticate method and bind it
 
-```
+```js
   constructor() {
     super();
     this.renderPirates = this.renderPirates.bind(this);
@@ -472,11 +463,11 @@ Create the authenticate method and bind it
 
 Import base:
 
-```
+```js
 import base from '../base';
 ```
 
-```
+```js
   authenticate(provider){
     console.log(`Trying to log in with ${provider}`);
     base.authWithOAuthPopup(provider, this.authHandler);
@@ -493,7 +484,7 @@ Bind the authHandler:
 
 If no error add uid to state.
 
-```
+```js
   authHandler(err, authData) {
     console.log(authData)
     if (err){
@@ -508,7 +499,7 @@ If no error add uid to state.
 
 Refresh is a problem. Use a lifecycle hook.
 
-```
+```js
 componentDidMount(){
   base.onAuth((user) => {
     if(user) {
@@ -520,7 +511,7 @@ componentDidMount(){
 
 Log Out
 
-```
+```js
 logout(){
   base.unauth();
   this.setState({uid: null})
@@ -538,7 +529,6 @@ render(){
   const logout = <button onClick={() => this.logout()}>Log Out</button>;
 ```
 
-
 ### Notes
 
 Create a repo.
@@ -546,39 +536,3 @@ Create a repo.
 Sub git a build
 
 Set "homepage": "https://xxx.github.io/<repo-name>" in package.json
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
