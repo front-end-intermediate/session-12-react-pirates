@@ -16,7 +16,7 @@ npm run start
 
 Not every component needs to be involved with data. When you only need to render some material use a Stateless Functional Component.
 
-* `Header`:
+* Simplify `Header`:
 
 ```js
 import React, { Component } from 'react';
@@ -52,6 +52,8 @@ const Header = props => {
 export default Header;
 ```
 
+Add the required prop.
+
 * `App`:
 
 ```html
@@ -66,6 +68,7 @@ Demo using db on Firebase. Firebase is like one big object.
 
 1. Create an account at [Firebase](https://firebase.com/)
 1. Create a new project called `<firstname>-<lastname>-pirates`
+1. Create Project
 1. Go to the empty database (left hand menu)
 
 Click on Rules at the top.
