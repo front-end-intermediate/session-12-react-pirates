@@ -54,7 +54,7 @@ export default Header;
 
 * `App`:
 
-```
+```html
 <Header headerTitle="Pirates List" />
 ```
 
@@ -64,7 +64,7 @@ Note - no 'this' required in the props.
 
 Demo using db on Firebase. Firebase is like one big object.
 
-1. Create an account at https://firebase.com/
+1. Create an account at [Firebase](https://firebase.com/)
 1. Create a new project called `<firstname>-<lastname>-pirates`
 1. Go to the empty database (left hand menu)
 
@@ -98,7 +98,7 @@ Examine App.js state. Any change to pirates needs to be made to firebase.
 
 in src create `base.js`
 
-```
+```js
 import Rebase from 're-base'
 
 const base = Rebase.createClass({
@@ -200,7 +200,7 @@ removePirate={this.removePirate} />
 
 Call `renderPirates` with a `.map`:
 
-```
+```js
 render(){
   return (
     <div>
@@ -209,7 +209,7 @@ render(){
 
 Add the function
 
-```
+```js
   renderPirates(key){
     return (
     <p>{key}</p>
@@ -232,7 +232,7 @@ Add the function
   }
 ```
 
-```
+```js
   constructor() {
     super();
     this.renderPirates = this.renderPirates.bind(this);
@@ -285,7 +285,7 @@ We need a copy of the object. This is the old method:
 
 but we will use spread operator and overlay the new properties on top of it. `e.target.name` gives us the property name so we will use what's know as a computed property - `[e.target.name]`.
 
-```
+```js
   handleChange(e, key){
     const pirate = this.props.pirates[key]
     const updatedPirate = {
@@ -300,7 +300,7 @@ Pass the updated pirate to the App component for updating.
 
 * `App`:
 
-```
+```js
   updatePirate(key, updatedPirate){
     const pirates = {...this.state.pirates};
     pirates[key] = updatedPirate;
@@ -384,7 +384,7 @@ Copy the URL from Firebase and enter the Client ID and Client Secret into Fireba
 
 * `PirateForm`:
 
-```
+```js
   renderLogin(){
     return (
       <div>
@@ -524,7 +524,7 @@ Bind it
 
 Add a call to the method in the button
 
-```
+```js
 render(){
   const logout = <button onClick={() => this.logout()}>Log Out</button>;
 ```
@@ -535,4 +535,4 @@ Create a repo.
 
 Sub git a build
 
-Set "homepage": "https://xxx.github.io/<repo-name>" in package.json
+Set `"homepage": "https://xxx.github.io/<repo-name>"` in package.json
