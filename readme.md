@@ -197,7 +197,7 @@ Make the state available to the `PirateForm`
 pirates={this.state.pirates}
 addPirate={this.addPirate}
 loadSamples={this.loadSamples}
-removePirate={this.removePirate} />
+/>
 </div>
 ```
 
@@ -250,7 +250,7 @@ Note the error. We need a constructor.
   }
 ```
 
-Again, note the error. React only allows you to put state into a field if you have the intention of editing it.
+Again, note the error. React only allows you to put state into a field if you have the intention of editing it. We will use `onChange`.
 
 Listen for a change on one input.
 
@@ -331,7 +331,6 @@ Pass the method to the component.
   pirates={this.state.pirates}
   addPirate={this.addPirate}
   loadSamples={this.loadSamples}
-  removePirate={this.removePirate}
 />
 ```
 
@@ -344,7 +343,6 @@ constructor() {
   super();
   this.addPirate = this.addPirate.bind(this);
   this.loadSamples = this.loadSamples.bind(this)
-  this.removePirate = this.removePirate.bind(this)
   this.updatePirate = this.updatePirate.bind(this)
   this.state = {
     pirates: {}
